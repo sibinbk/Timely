@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Q0M-yL-b5B">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="zMO-uh-D0Q">
+            <objects>
+                <viewController id="Q0M-yL-b5B" customClass="BTViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="zx5-ej-oU5"/>
+                        <viewControllerLayoutGuide type="bottom" id="fFn-wT-zm6"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="2Vo-2b-94N">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JBQ-60-2jX">
+                                <rect key="frame" x="20" y="124" width="280" height="111"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="280" id="Nbg-1n-ZfH"/>
+                                    <constraint firstAttribute="height" constant="111" id="V1u-DY-y3t"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="50"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oGw-5a-qlS">
+                                <rect key="frame" x="207" y="335" width="33" height="30"/>
+                                <state key="normal" title="Start">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="startButtonPressed:" destination="Q0M-yL-b5B" eventType="touchUpInside" id="sT1-hX-dOL"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3yP-Kh-pfl">
+                                <rect key="frame" x="80" y="335" width="40" height="30"/>
+                                <state key="normal" title="Reset"/>
+                                <connections>
+                                    <action selector="resetButtonPressed:" destination="Q0M-yL-b5B" eventType="touchUpInside" id="E5U-AP-u3Z"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="3yP-Kh-pfl" firstAttribute="centerY" secondItem="oGw-5a-qlS" secondAttribute="centerY" id="9DM-h6-Zrh"/>
+                            <constraint firstItem="JBQ-60-2jX" firstAttribute="top" secondItem="2Vo-2b-94N" secondAttribute="top" constant="124" id="JmL-Lb-LpR"/>
+                            <constraint firstAttribute="trailing" secondItem="oGw-5a-qlS" secondAttribute="trailing" constant="80" id="QHT-Yo-vHJ"/>
+                            <constraint firstItem="3yP-Kh-pfl" firstAttribute="top" secondItem="JBQ-60-2jX" secondAttribute="bottom" constant="100" id="bEi-UG-VJM"/>
+                            <constraint firstAttribute="centerX" secondItem="JBQ-60-2jX" secondAttribute="centerX" id="dba-kC-UFI"/>
+                            <constraint firstItem="3yP-Kh-pfl" firstAttribute="leading" secondItem="2Vo-2b-94N" secondAttribute="leading" constant="80" id="zGp-mD-5B9"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="Ir0-3c-ZvM">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Lvg-gc-TiO"/>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="resetButton" destination="3yP-Kh-pfl" id="Jrj-sX-7wl"/>
+                        <outlet property="startButton" destination="oGw-5a-qlS" id="hHW-qi-EgM"/>
+                        <outlet property="timerLabel" destination="JBQ-60-2jX" id="OWD-OC-abK"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lbw-fA-1vf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="794" y="100"/>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>
