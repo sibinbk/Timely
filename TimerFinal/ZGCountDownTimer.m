@@ -141,7 +141,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
         if (self.totalCountDownTime > self.timePassed) {
             self.countDownCompleteDate = [NSDate dateWithTimeInterval:(self.totalCountDownTime - self.timePassed) sinceDate:[NSDate date]];
             self.countDownRunning = YES;
-            [self setupLocalNotifications];
+//            [self setupLocalNotifications];
             [self backUpMySelf];
             return YES;
         } else {
@@ -158,7 +158,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 {
     if ([self countDownRunning]) {
         self.countDownRunning = NO;
-        [[UIApplication sharedApplication] cancelAllLocalNotifications];
+//        [[UIApplication sharedApplication] cancelAllLocalNotifications];
         [self backUpMySelf];
         return YES;
     }
@@ -171,7 +171,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 {
     self.timePassed = 0;
     self.countDownRunning = NO;
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
     [self setInitiaCycleValues];
     [self removeSelfBackup];
 }

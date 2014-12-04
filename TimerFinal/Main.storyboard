@@ -43,14 +43,25 @@
                                     <action selector="resetButtonPressed:" destination="Q0M-yL-b5B" eventType="touchUpInside" id="E5U-AP-u3Z"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoDark" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8QW-K6-LGt">
+                                <rect key="frame" x="282" y="538" width="22" height="22"/>
+                                <state key="normal">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="FZx-tA-yB0" kind="modal" id="yZ5-Qt-pIV"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="8QW-K6-LGt" secondAttribute="trailing" constant="16" id="2RS-Ee-RM6"/>
                             <constraint firstItem="3yP-Kh-pfl" firstAttribute="centerY" secondItem="oGw-5a-qlS" secondAttribute="centerY" id="9DM-h6-Zrh"/>
                             <constraint firstItem="JBQ-60-2jX" firstAttribute="top" secondItem="2Vo-2b-94N" secondAttribute="top" constant="124" id="JmL-Lb-LpR"/>
                             <constraint firstAttribute="trailing" secondItem="oGw-5a-qlS" secondAttribute="trailing" constant="80" id="QHT-Yo-vHJ"/>
                             <constraint firstItem="3yP-Kh-pfl" firstAttribute="top" secondItem="JBQ-60-2jX" secondAttribute="bottom" constant="100" id="bEi-UG-VJM"/>
                             <constraint firstAttribute="centerX" secondItem="JBQ-60-2jX" secondAttribute="centerX" id="dba-kC-UFI"/>
+                            <constraint firstAttribute="bottom" secondItem="8QW-K6-LGt" secondAttribute="bottom" constant="8" id="yaO-Ur-aGz"/>
                             <constraint firstItem="3yP-Kh-pfl" firstAttribute="leading" secondItem="2Vo-2b-94N" secondAttribute="leading" constant="80" id="zGp-mD-5B9"/>
                         </constraints>
                     </view>
@@ -67,6 +78,45 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lbw-fA-1vf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="794" y="100"/>
+        </scene>
+        <!--Detail Viewcontroller-->
+        <scene sceneID="QoO-HB-uDk">
+            <objects>
+                <viewController id="FZx-tA-yB0" customClass="DetailViewcontroller" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="eJe-In-Jcm"/>
+                        <viewControllerLayoutGuide type="bottom" id="buu-Mc-VoA"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="xbc-NJ-Sju">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hi there" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EhT-cy-VEz">
+                                <rect key="frame" x="130" y="273" width="60" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ytU-mX-AVm">
+                                <rect key="frame" x="16" y="20" width="48" height="30"/>
+                                <state key="normal" title="Cancel"/>
+                                <connections>
+                                    <action selector="cancel:" destination="FZx-tA-yB0" eventType="touchUpInside" id="6D8-lq-KaA"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ytU-mX-AVm" firstAttribute="leading" secondItem="xbc-NJ-Sju" secondAttribute="leading" constant="16" id="2Gt-n4-TRC"/>
+                            <constraint firstAttribute="centerX" secondItem="EhT-cy-VEz" secondAttribute="centerX" id="6oX-4f-T2m"/>
+                            <constraint firstItem="ytU-mX-AVm" firstAttribute="top" secondItem="xbc-NJ-Sju" secondAttribute="top" constant="20" id="Mbj-kg-W84"/>
+                            <constraint firstAttribute="centerY" secondItem="EhT-cy-VEz" secondAttribute="centerY" id="fUt-ns-enk"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pSx-GR-S41" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1186" y="98"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

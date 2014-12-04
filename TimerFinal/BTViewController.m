@@ -130,6 +130,10 @@
 
 - (void)secondUpdated:(ZGCountDownTimer *)sender countDownTimePassed:(NSTimeInterval)timePassed ofTotalTime:(NSTimeInterval)totalTime {
     self.timerLabel.text = [ZGCountDownTimer getDateStringForTimeInterval:(totalTime - timePassed)];
+    
+    if ([self.delegate respondsToSelector:@selector(secondLabelUpdated:)]) {
+        [self.delegate secondLabelUpdated:self];
+    }
 }
 
 - (void)countDownCompleted:(ZGCountDownTimer *)sender {
