@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		C30FC1561A301D75009000F1 /* ZGCountDownTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = C30FC1551A301D75009000F1 /* ZGCountDownTimer.m */; };
-		C32701D91A2F46ED00D58D3D /* DetailViewcontroller.m in Sources */ = {isa = PBXBuildFile; fileRef = C32701D81A2F46ED00D58D3D /* DetailViewcontroller.m */; };
 		C34D53881A2EF88500566AEE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C34D53871A2EF88500566AEE /* main.m */; };
 		C34D538B1A2EF88500566AEE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C34D538A1A2EF88500566AEE /* AppDelegate.m */; };
 		C34D538E1A2EF88500566AEE /* TimerFinal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C34D538C1A2EF88500566AEE /* TimerFinal.xcdatamodeld */; };
@@ -32,8 +31,6 @@
 /* Begin PBXFileReference section */
 		C30FC1541A301D75009000F1 /* ZGCountDownTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZGCountDownTimer.h; sourceTree = "<group>"; };
 		C30FC1551A301D75009000F1 /* ZGCountDownTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZGCountDownTimer.m; sourceTree = "<group>"; };
-		C32701D71A2F46ED00D58D3D /* DetailViewcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewcontroller.h; sourceTree = "<group>"; };
-		C32701D81A2F46ED00D58D3D /* DetailViewcontroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewcontroller.m; sourceTree = "<group>"; };
 		C34D53821A2EF88500566AEE /* TimerFinal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimerFinal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C34D53861A2EF88500566AEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C34D53871A2EF88500566AEE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -94,8 +91,6 @@
 				C34D538A1A2EF88500566AEE /* AppDelegate.m */,
 				C34D53B11A2EF8ED00566AEE /* BTViewController.h */,
 				C34D53B21A2EF8ED00566AEE /* BTViewController.m */,
-				C32701D71A2F46ED00D58D3D /* DetailViewcontroller.h */,
-				C32701D81A2F46ED00D58D3D /* DetailViewcontroller.m */,
 				C34D53B51A2EF92000566AEE /* Main.storyboard */,
 				C34D53951A2EF88500566AEE /* Images.xcassets */,
 				C34D53971A2EF88500566AEE /* LaunchScreen.xib */,
@@ -243,7 +238,6 @@
 				C34D538B1A2EF88500566AEE /* AppDelegate.m in Sources */,
 				C34D53B31A2EF8ED00566AEE /* BTViewController.m in Sources */,
 				C30FC1561A301D75009000F1 /* ZGCountDownTimer.m in Sources */,
-				C32701D91A2F46ED00D58D3D /* DetailViewcontroller.m in Sources */,
 				C34D53881A2EF88500566AEE /* main.m in Sources */,
 				C34D538E1A2EF88500566AEE /* TimerFinal.xcdatamodeld in Sources */,
 			);
