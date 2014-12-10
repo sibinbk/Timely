@@ -32,10 +32,10 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    self.taskTime = 20;
-    self.shortBreakTime = 10;
-    self.longBreakTime = 15;
-    self.repeatCount = 3;
+    self.taskTime = 30;
+    self.shortBreakTime = 15;
+    self.longBreakTime = 20;
+    self.repeatCount = 5;
     self.longBreakDelay = 2;
     
     self.myCountDownTimer = [ZGCountDownTimer countDownTimerWithIdentifier:@"MyTimer"];
@@ -50,17 +50,7 @@
         timer.repeatCount = self.repeatCount;
         timer.longBreakDelay = self.longBreakDelay;
         timer.totalCountDownTime = [self calculateTotalCountDownTime];
-    }
-                                       restoreFromBackUp:^(ZGCountDownTimer *timer) {
-//        if (!timer.isRunning) {
-//            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"It's not running anymore"
-//                                                                message:@"Count down completed"
-//                                                               delegate:nil
-//                                                      cancelButtonTitle:@"Dismiss"
-//                                                      otherButtonTitles:nil];
-//            [alertView show];
-//        }
-    }];
+    } restoreFromBackUp:^(ZGCountDownTimer *timer) {}];
     
     if (![self.myCountDownTimer isRunning]) {
         if (!self.myCountDownTimer.started)

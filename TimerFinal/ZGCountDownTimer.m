@@ -141,7 +141,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
         if (self.totalCountDownTime > self.timePassed) {
             self.countDownCompleteDate = [NSDate dateWithTimeInterval:(self.totalCountDownTime - self.timePassed) sinceDate:[NSDate date]];
             self.countDownRunning = YES;
-//            [self setupLocalNotifications];
+            [self setupLocalNotifications];
             [self backUpMySelf];
             return YES;
         } else {
@@ -158,7 +158,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 {
     if ([self countDownRunning]) {
         self.countDownRunning = NO;
-//        [[UIApplication sharedApplication] cancelAllLocalNotifications];
+        [[UIApplication sharedApplication] cancelAllLocalNotifications];
         [self backUpMySelf];
         return YES;
     }
@@ -171,7 +171,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 {
     self.timePassed = 0;
     self.countDownRunning = NO;
-//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
     [self setInitiaCycleValues];
     [self removeSelfBackup];
 }
@@ -315,45 +315,44 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)setupLocalNotifications
 {
-    NSTimeInterval currentCycleTime = self.cycleTime;
-    NSTimeInterval completedTime = self.timePassed;
+    // Calculates completion time of each cycle.
+    NSTimeInterval cycleFinishTime = self.cycleTime;
     CountDownCycleType cycleType = self.cycle;
     NSInteger taskTimerCount = self.taskCount;
-    
-    NSTimeInterval alertTime = 0;
     int notificationCount = (int)(self.repeatCount * 2 - self.timerCycleCount);
     
     UILocalNotification *notification = [[UILocalNotification alloc] init];
-    notification.timeZone = [NSTimeZone defaultTimeZone];
+    notification.timeZone = nil;
     notification.soundName = UILocalNotificationDefaultSoundName;
     
     for (int i = 0; i < notificationCount; i++) {
         
         switch (cycleType) {
             case TaskCycle:
-                alertTime = currentCycleTime + (self.taskTime * i);
-                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(alertTime - completedTime)];
+                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(cycleFinishTime - self.timePassed)];
                 notification.alertBody = [NSString stringWithFormat:@"Task Cycle # %d completed. Have a break.", (int)taskTimerCount] ;
                 if (![self checkIfLongBreakCycle:taskTimerCount]) {
                     cycleType = ShortBreakCycle;
+                    cycleFinishTime += self.shortBreakTime;
                 } else {
                     cycleType = LongBreakCycle;
+                    cycleFinishTime += self.longBreakTime;
                 }
                 break;
                 
             case ShortBreakCycle:
-                alertTime = currentCycleTime + (self.shortBreakTime * i);
-                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(alertTime - completedTime)];
+                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(cycleFinishTime - self.timePassed)];
                 notification.alertBody = @"Short Break completed";
                 cycleType = TaskCycle;
+                cycleFinishTime += self.taskTime;
                 taskTimerCount++;
                 break;
                 
             case LongBreakCycle:
-                alertTime = currentCycleTime + (self.longBreakTime * i);
-                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(alertTime - completedTime)];
+                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(cycleFinishTime - self.timePassed)];
                 notification.alertBody = @"Long Break completed";
                 cycleType = TaskCycle;
+                cycleFinishTime += self.taskTime;
                 taskTimerCount++;
                 break;
         }
@@ -361,8 +360,9 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
         [[UIApplication sharedApplication] scheduleLocalNotification:notification];
     }
     
-    notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(self.totalCountDownTime - completedTime)];
+    notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(self.totalCountDownTime - self.timePassed)];
     notification.alertBody = @"Well done. Task finished.";
+    
     [[UIApplication sharedApplication] scheduleLocalNotification:notification];
 }
 
