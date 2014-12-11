@@ -8,15 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@class BTViewController;
-
-@protocol BTViewControllerDelegate <NSObject>
-
-@optional
-- (void)secondLabelUpdated:(BTViewController *)sender;
-
-@end
-
 @interface BTViewController : UIViewController
 
 @property (nonatomic) NSTimeInterval taskTime;
@@ -24,8 +15,5 @@
 @property (nonatomic) NSTimeInterval longBreakTime;
 @property (nonatomic) NSInteger repeatCount;
 @property (nonatomic) NSInteger longBreakDelay;
-
-//BTViewController delegate.
-@property (nonatomic, weak) id<BTViewControllerDelegate> delegate;
 
 @end

@@ -16,7 +16,7 @@
 #define kZGTaskTime                         @"taskTime"
 #define kZGShortBreakTime                   @"shortBreakTime"
 #define kZGLongBreakTime                    @"longBreakTime"
-#define kZGCycleTime                        @"cycleTime"
+#define kZGCycleFinishTime                  @"cycleFinishTime"
 #define kZGRepeatCount                      @"repeatCount"
 #define kZGTaskCount                        @"taskCount"
 #define kZGTimerCycleCount                  @"timerCycleCount"
@@ -36,7 +36,7 @@ typedef NS_ENUM(NSInteger, CountDownCycleType) {
 @property (nonatomic) NSTimer *defaultTimer;
 @property (nonatomic) BOOL countDownRunning;
 @property (nonatomic) NSDate *countDownCompleteDate;
-@property (nonatomic) NSTimeInterval cycleTime;
+@property (nonatomic) NSTimeInterval cycleFinishTime;
 @property (nonatomic) CountDownCycleType cycle;
 @property (nonatomic) NSInteger taskCount;
 @property (nonatomic) NSInteger longBreakCount;
@@ -118,7 +118,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
         if (!self.started) {
             [self notifyDelegate:self.taskTime];
         } else {
-            [self notifyDelegate:self.cycleTime];
+            [self notifyDelegate:self.cycleFinishTime];
         }
     }
 }
@@ -191,17 +191,17 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
         else {
             NSTimeInterval newTimePassed = round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]);
             
-            if (self.cycleTime < newTimePassed) {
-                while (self.cycleTime < newTimePassed) {
+            if (self.cycleFinishTime < newTimePassed) {
+                while (self.cycleFinishTime < newTimePassed) {
                     switch (self.cycle) {
                         case TaskCycle:
                             self.timerCycleCount++;
                             if (![self checkIfLongBreakCycle:self.taskCount]) {
                                 self.cycle = ShortBreakCycle;
-                                self.cycleTime += self.shortBreakTime;
+                                self.cycleFinishTime += self.shortBreakTime;
                             } else {
                                 self.cycle = LongBreakCycle;
-                                self.cycleTime += self.longBreakTime;
+                                self.cycleFinishTime += self.longBreakTime;
                             }
                             break;
                             
@@ -209,20 +209,20 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                             self.cycle = TaskCycle;
                             self.taskCount++;
                             self.timerCycleCount++;
-                            self.cycleTime += self.taskTime;
+                            self.cycleFinishTime += self.taskTime;
                             break;
                             
                         case LongBreakCycle:
                             self.cycle = TaskCycle;
                             self.taskCount++;
                             self.timerCycleCount++;
-                            self.cycleTime += self.taskTime;
+                            self.cycleFinishTime += self.taskTime;
                             break;
                     }
                     
                     [self notifySpecificDelegateMethod:newTimePassed];
                 }
-            } else if (self.cycleTime == newTimePassed) {
+            } else if (self.cycleFinishTime == newTimePassed) {
                 
                 [self notifySpecificDelegateMethod:newTimePassed];
                 
@@ -231,10 +231,10 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                         self.timerCycleCount++;
                         if (![self checkIfLongBreakCycle:self.taskCount]) {
                             self.cycle = ShortBreakCycle;
-                            self.cycleTime += self.shortBreakTime;
+                            self.cycleFinishTime += self.shortBreakTime;
                         } else {
                             self.cycle = LongBreakCycle;
-                            self.cycleTime += self.longBreakTime;
+                            self.cycleFinishTime += self.longBreakTime;
                         }
                         if ([self.delegate respondsToSelector:@selector(taskCompleted:)])
                             [self.delegate taskCompleted:self];
@@ -244,7 +244,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                         self.cycle = TaskCycle;
                         self.taskCount++;
                         self.timerCycleCount++;
-                        self.cycleTime += self.taskTime;
+                        self.cycleFinishTime += self.taskTime;
                         if ([self.delegate respondsToSelector:@selector(shortBreakCompleted:)])
                             [self.delegate shortBreakCompleted:self];
                         break;
@@ -253,7 +253,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                         self.cycle = TaskCycle;
                         self.taskCount++;
                         self.timerCycleCount++;
-                        self.cycleTime += self.taskTime;
+                        self.cycleFinishTime += self.taskTime;
                         if ([self.delegate respondsToSelector:@selector(longBreakCompleted:)])
                             [self.delegate longBreakCompleted:self];
                         break;
@@ -291,7 +291,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)setInitiaCycleValues
 {
-    self.cycleTime = self.taskTime;
+    self.cycleFinishTime = self.taskTime;
     self.cycle = TaskCycle;
     self.taskCount = 1;
     self.timerCycleCount = 1;
@@ -307,7 +307,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (void)notifySpecificDelegateMethod:(NSTimeInterval)newTimePassed
 {
     if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:)]) {
-        [self.delegate secondUpdated:self countDownTimePassed:newTimePassed ofTotalTime:self.cycleTime];
+        [self.delegate secondUpdated:self countDownTimePassed:newTimePassed ofTotalTime:self.cycleFinishTime];
     }
 }
 
@@ -316,7 +316,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (void)setupLocalNotifications
 {
     // Calculates completion time of each cycle.
-    NSTimeInterval cycleFinishTime = self.cycleTime;
+    NSTimeInterval tempCycleFinishTime = self.cycleFinishTime;
     CountDownCycleType cycleType = self.cycle;
     NSInteger taskTimerCount = self.taskCount;
     int notificationCount = (int)(self.repeatCount * 2 - self.timerCycleCount);
@@ -329,30 +329,30 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
         
         switch (cycleType) {
             case TaskCycle:
-                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(cycleFinishTime - self.timePassed)];
+                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(tempCycleFinishTime - self.timePassed)];
                 notification.alertBody = [NSString stringWithFormat:@"Task Cycle # %d completed. Have a break.", (int)taskTimerCount] ;
                 if (![self checkIfLongBreakCycle:taskTimerCount]) {
                     cycleType = ShortBreakCycle;
-                    cycleFinishTime += self.shortBreakTime;
+                    tempCycleFinishTime += self.shortBreakTime;
                 } else {
                     cycleType = LongBreakCycle;
-                    cycleFinishTime += self.longBreakTime;
+                    tempCycleFinishTime += self.longBreakTime;
                 }
                 break;
                 
             case ShortBreakCycle:
-                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(cycleFinishTime - self.timePassed)];
+                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(tempCycleFinishTime - self.timePassed)];
                 notification.alertBody = @"Short Break completed";
                 cycleType = TaskCycle;
-                cycleFinishTime += self.taskTime;
+                tempCycleFinishTime += self.taskTime;
                 taskTimerCount++;
                 break;
                 
             case LongBreakCycle:
-                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(cycleFinishTime - self.timePassed)];
+                notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:(tempCycleFinishTime - self.timePassed)];
                 notification.alertBody = @"Long Break completed";
                 cycleType = TaskCycle;
-                cycleFinishTime += self.taskTime;
+                tempCycleFinishTime += self.taskTime;
                 taskTimerCount++;
                 break;
         }
@@ -404,7 +404,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
              kZGTaskTime: [NSNumber numberWithDouble:self.taskTime],
              kZGShortBreakTime: [NSNumber numberWithDouble:self.shortBreakTime],
              kZGLongBreakTime: [NSNumber numberWithDouble:self.longBreakTime],
-             kZGCycleTime: [NSNumber numberWithDouble:self.cycleTime],
+             kZGCycleFinishTime: [NSNumber numberWithDouble:self.cycleFinishTime],
              kZGRepeatCount: [NSNumber numberWithInteger:self.repeatCount],
              kZGTaskCount: [NSNumber numberWithInteger:self.taskCount],
              kZGTimerCycleCount: [NSNumber numberWithInteger:self.timerCycleCount],
@@ -421,7 +421,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     self.taskTime = [[countDownInfo valueForKey:kZGTaskTime] doubleValue];
     self.shortBreakTime = [[countDownInfo valueForKey:kZGShortBreakTime] doubleValue];
     self.longBreakTime = [[countDownInfo valueForKey:kZGLongBreakTime] doubleValue];
-    self.cycleTime = [[countDownInfo valueForKey:kZGCycleTime] doubleValue];
+    self.cycleFinishTime = [[countDownInfo valueForKey:kZGCycleFinishTime] doubleValue];
     self.repeatCount = [[countDownInfo valueForKey:kZGRepeatCount] integerValue];
     self.taskCount = [[countDownInfo valueForKey:kZGTaskCount] integerValue];
     self.timerCycleCount = [[countDownInfo valueForKey:kZGTimerCycleCount] integerValue];
