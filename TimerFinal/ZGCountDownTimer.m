@@ -192,6 +192,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
             NSTimeInterval newTimePassed = round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]);
             
             if (self.cycleFinishTime < newTimePassed) {
+                NSLog(@"CycleTime < TimePassed");
                 while (self.cycleFinishTime < newTimePassed) {
                     switch (self.cycle) {
                         case TaskCycle:
@@ -217,10 +218,10 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                             self.cycleFinishTime += self.taskTime;
                             break;
                     }
-                    [self notifySpecificDelegateMethod:newTimePassed];
                 }
+//                [self notifySpecificDelegateMethod:newTimePassed];
             } else if (self.cycleFinishTime == newTimePassed) {
-                
+                NSLog(@"CycleTime == TimePassed");
                 [self notifySpecificDelegateMethod:newTimePassed];
                 
                 switch (self.cycle) {
@@ -254,6 +255,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                         break;
                 }
             } else {
+                NSLog(@"CycleTime > Timepassed");
                 [self notifySpecificDelegateMethod:newTimePassed];
             }
             
@@ -294,15 +296,17 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)notifyDelegate:(NSTimeInterval)newCycleTime
 {
+    NSLog(@"Notify delegate");
     if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:ofCycle:)]) {
-        [self.delegate secondUpdated:self countDownTimePassed:self.timePassed ofTotalTime:newCycleTime ofCycle:[self currentCycleName]];
+        [self.delegate secondUpdated:self countDownTimePassed:self.timePassed ofTotalTime:newCycleTime ofCycle:nil];
     }
 }
 
 - (void)notifySpecificDelegateMethod:(NSTimeInterval)newTimePassed
 {
+    NSLog(@"Notify Specific  delegate");
     if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:ofCycle:)]) {
-        [self.delegate secondUpdated:self countDownTimePassed:newTimePassed ofTotalTime:self.cycleFinishTime ofCycle:[self currentCycleName]];
+        [self.delegate secondUpdated:self countDownTimePassed:newTimePassed ofTotalTime:self.cycleFinishTime ofCycle:nil];
     }
 }
 

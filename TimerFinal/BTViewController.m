@@ -28,6 +28,11 @@
 
 @implementation BTViewController
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    NSLog(@"view will appear");
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -39,7 +44,7 @@
     self.repeatCount = 2;
     self.longBreakDelay = 2;
     
-    self.myCountDownTimer = [ZGCountDownTimer countDownTimerWithIdentifier:@"MyTimer"];
+    self.myCountDownTimer = [ZGCountDownTimer countDownTimerWithIdentifier:nil];
     self.myCountDownTimer.delegate = self;
     
     NSLog(@"View loaded");
