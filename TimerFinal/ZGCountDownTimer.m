@@ -181,7 +181,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (void)timerUpdated:(NSTimer *)timer
 {
     if ([self countDownRunning]) {
-        if ([self.countDownCompleteDate timeIntervalSinceNow] <= 0 && self.taskCount > self.repeatCount) {
+        if ([self.countDownCompleteDate timeIntervalSinceNow] <= 0) {
             self.timePassed = MAX(0, round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]));
             if ([self.delegate respondsToSelector:@selector(countDownCompleted:)]) {
                 [self.delegate countDownCompleted:self];
@@ -219,7 +219,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                             break;
                     }
                 }
-//                [self notifySpecificDelegateMethod:newTimePassed];
+                [self notifySpecificDelegateMethod:newTimePassed];
             } else if (self.cycleFinishTime == newTimePassed) {
                 NSLog(@"CycleTime == TimePassed");
                 [self notifySpecificDelegateMethod:newTimePassed];
@@ -298,7 +298,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 {
     NSLog(@"Notify delegate");
     if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:ofCycle:)]) {
-        [self.delegate secondUpdated:self countDownTimePassed:self.timePassed ofTotalTime:newCycleTime ofCycle:nil];
+        [self.delegate secondUpdated:self countDownTimePassed:self.timePassed ofTotalTime:newCycleTime ofCycle:[self currentCycleName]];
     }
 }
 
@@ -306,7 +306,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 {
     NSLog(@"Notify Specific  delegate");
     if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:ofCycle:)]) {
-        [self.delegate secondUpdated:self countDownTimePassed:newTimePassed ofTotalTime:self.cycleFinishTime ofCycle:nil];
+        [self.delegate secondUpdated:self countDownTimePassed:newTimePassed ofTotalTime:self.cycleFinishTime ofCycle:[self currentCycleName]];
     }
 }
 
