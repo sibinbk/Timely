@@ -220,8 +220,9 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                     }
                 }
                 [self notifySpecificDelegateMethod:newTimePassed];
+                
             } else if (self.cycleFinishTime == newTimePassed) {
-                NSLog(@"CycleTime == TimePassed");
+                
                 [self notifySpecificDelegateMethod:newTimePassed];
                 
                 switch (self.cycle) {
@@ -255,7 +256,6 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                         break;
                 }
             } else {
-                NSLog(@"CycleTime > Timepassed");
                 [self notifySpecificDelegateMethod:newTimePassed];
             }
             
@@ -296,7 +296,6 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)notifyDelegate:(NSTimeInterval)newCycleTime
 {
-    NSLog(@"Notify delegate");
     if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:ofCycle:)]) {
         [self.delegate secondUpdated:self countDownTimePassed:self.timePassed ofTotalTime:newCycleTime ofCycle:[self currentCycleName]];
     }
@@ -304,7 +303,6 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)notifySpecificDelegateMethod:(NSTimeInterval)newTimePassed
 {
-    NSLog(@"Notify Specific  delegate");
     if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:ofCycle:)]) {
         [self.delegate secondUpdated:self countDownTimePassed:newTimePassed ofTotalTime:self.cycleFinishTime ofCycle:[self currentCycleName]];
     }
@@ -339,7 +337,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     
     UILocalNotification *notification = [[UILocalNotification alloc] init];
     notification.timeZone = nil;
-    notification.soundName = UILocalNotificationDefaultSoundName;
+    notification.soundName = nil;
     
     for (int i = 0; i < notificationCount; i++) {
         
