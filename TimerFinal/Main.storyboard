@@ -24,12 +24,13 @@
                                     <constraint firstAttribute="height" constant="111" id="V1u-DY-y3t"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="50"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oGw-5a-qlS">
                                 <rect key="frame" x="207" y="335" width="33" height="30"/>
                                 <state key="normal" title="Start">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -38,27 +39,30 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3yP-Kh-pfl">
                                 <rect key="frame" x="80" y="335" width="40" height="30"/>
-                                <state key="normal" title="Reset"/>
+                                <state key="normal" title="Reset">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
                                 <connections>
                                     <action selector="resetButtonPressed:" destination="Q0M-yL-b5B" eventType="touchUpInside" id="E5U-AP-u3Z"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoDark" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8QW-K6-LGt">
-                                <rect key="frame" x="282" y="538" width="22" height="22"/>
-                                <state key="normal">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wZM-7L-20u">
+                                <rect key="frame" x="139" y="60" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.0" green="0.50196081399917603" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="8QW-K6-LGt" secondAttribute="trailing" constant="16" id="2RS-Ee-RM6"/>
                             <constraint firstItem="3yP-Kh-pfl" firstAttribute="centerY" secondItem="oGw-5a-qlS" secondAttribute="centerY" id="9DM-h6-Zrh"/>
                             <constraint firstItem="JBQ-60-2jX" firstAttribute="top" secondItem="2Vo-2b-94N" secondAttribute="top" constant="124" id="JmL-Lb-LpR"/>
                             <constraint firstAttribute="trailing" secondItem="oGw-5a-qlS" secondAttribute="trailing" constant="80" id="QHT-Yo-vHJ"/>
                             <constraint firstItem="3yP-Kh-pfl" firstAttribute="top" secondItem="JBQ-60-2jX" secondAttribute="bottom" constant="100" id="bEi-UG-VJM"/>
+                            <constraint firstAttribute="centerX" secondItem="wZM-7L-20u" secondAttribute="centerX" id="bMg-Hj-ONi"/>
                             <constraint firstAttribute="centerX" secondItem="JBQ-60-2jX" secondAttribute="centerX" id="dba-kC-UFI"/>
-                            <constraint firstAttribute="bottom" secondItem="8QW-K6-LGt" secondAttribute="bottom" constant="8" id="yaO-Ur-aGz"/>
+                            <constraint firstItem="wZM-7L-20u" firstAttribute="top" secondItem="2Vo-2b-94N" secondAttribute="top" constant="60" id="qfu-zA-1De"/>
+                            <constraint firstItem="wZM-7L-20u" firstAttribute="centerX" secondItem="JBQ-60-2jX" secondAttribute="centerX" id="uoo-9P-8Sa"/>
                             <constraint firstItem="3yP-Kh-pfl" firstAttribute="leading" secondItem="2Vo-2b-94N" secondAttribute="leading" constant="80" id="zGp-mD-5B9"/>
                         </constraints>
                     </view>
@@ -67,6 +71,7 @@
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Lvg-gc-TiO"/>
                     </navigationItem>
                     <connections>
+                        <outlet property="cycleLabel" destination="wZM-7L-20u" id="zdO-US-X15"/>
                         <outlet property="resetButton" destination="3yP-Kh-pfl" id="Jrj-sX-7wl"/>
                         <outlet property="startButton" destination="oGw-5a-qlS" id="hHW-qi-EgM"/>
                         <outlet property="timerLabel" destination="JBQ-60-2jX" id="OWD-OC-abK"/>

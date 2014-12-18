@@ -181,7 +181,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (void)timerUpdated:(NSTimer *)timer
 {
     if ([self countDownRunning]) {
-        if ([self.countDownCompleteDate timeIntervalSinceNow] <= 0 && self.taskCount > self.repeatCount) {
+        if ([self.countDownCompleteDate timeIntervalSinceNow] <= 0) {
             self.timePassed = MAX(0, round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]));
             if ([self.delegate respondsToSelector:@selector(countDownCompleted:)]) {
                 [self.delegate countDownCompleted:self];
@@ -192,6 +192,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
             NSTimeInterval newTimePassed = round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]);
             
             if (self.cycleFinishTime < newTimePassed) {
+                NSLog(@"CycleTime < TimePassed");
                 while (self.cycleFinishTime < newTimePassed) {
                     switch (self.cycle) {
                         case TaskCycle:
@@ -204,14 +205,12 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                                 self.cycleFinishTime += self.longBreakTime;
                             }
                             break;
-                            
                         case ShortBreakCycle:
                             self.cycle = TaskCycle;
                             self.taskCount++;
                             self.timerCycleCount++;
                             self.cycleFinishTime += self.taskTime;
                             break;
-                            
                         case LongBreakCycle:
                             self.cycle = TaskCycle;
                             self.taskCount++;
@@ -219,9 +218,9 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                             self.cycleFinishTime += self.taskTime;
                             break;
                     }
-                    
-                    [self notifySpecificDelegateMethod:newTimePassed];
                 }
+                [self notifySpecificDelegateMethod:newTimePassed];
+                
             } else if (self.cycleFinishTime == newTimePassed) {
                 
                 [self notifySpecificDelegateMethod:newTimePassed];
@@ -239,7 +238,6 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                         if ([self.delegate respondsToSelector:@selector(taskCompleted:)])
                             [self.delegate taskCompleted:self];
                         break;
-                        
                     case ShortBreakCycle:
                         self.cycle = TaskCycle;
                         self.taskCount++;
@@ -248,7 +246,6 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                         if ([self.delegate respondsToSelector:@selector(shortBreakCompleted:)])
                             [self.delegate shortBreakCompleted:self];
                         break;
-                        
                     case LongBreakCycle:
                         self.cycle = TaskCycle;
                         self.taskCount++;
@@ -299,16 +296,33 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)notifyDelegate:(NSTimeInterval)newCycleTime
 {
-    if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:)]) {
-        [self.delegate secondUpdated:self countDownTimePassed:self.timePassed ofTotalTime:newCycleTime];
+    if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:ofCycle:)]) {
+        [self.delegate secondUpdated:self countDownTimePassed:self.timePassed ofTotalTime:newCycleTime ofCycle:[self currentCycleName]];
     }
 }
 
 - (void)notifySpecificDelegateMethod:(NSTimeInterval)newTimePassed
 {
-    if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:)]) {
-        [self.delegate secondUpdated:self countDownTimePassed:newTimePassed ofTotalTime:self.cycleFinishTime];
+    if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:ofCycle:)]) {
+        [self.delegate secondUpdated:self countDownTimePassed:newTimePassed ofTotalTime:self.cycleFinishTime ofCycle:[self currentCycleName]];
     }
+}
+
+- (NSString *)currentCycleName
+{
+    NSString *cycleName;
+    switch (self.cycle) {
+        case TaskCycle:
+            cycleName = @"Pomodoro";
+            break;
+        case ShortBreakCycle:
+            cycleName = @"Short Break";
+            break;
+        case LongBreakCycle:
+            cycleName = @"Long Break";
+            break;
+    }
+    return cycleName;
 }
 
 #pragma mark - schedule local notifications
@@ -323,7 +337,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     
     UILocalNotification *notification = [[UILocalNotification alloc] init];
     notification.timeZone = nil;
-    notification.soundName = UILocalNotificationDefaultSoundName;
+    notification.soundName = nil;
     
     for (int i = 0; i < notificationCount; i++) {
         
