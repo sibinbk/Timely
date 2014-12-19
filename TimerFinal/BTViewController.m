@@ -39,16 +39,14 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    self.taskTime = 15;
-    self.shortBreakTime = 10;
-    self.longBreakTime = 13;
-    self.repeatCount = 2;
-    self.longBreakDelay = 2;
+    self.taskTime = 30;
+    self.shortBreakTime = 20;
+    self.longBreakTime = 40;
+    self.repeatCount = 5;
+    self.longBreakDelay = 3;
     
     self.myCountDownTimer = [ZGCountDownTimer countDownTimerWithIdentifier:nil];
     self.myCountDownTimer.delegate = self;
-    
-    NSLog(@"View loaded");
     
     [self.myCountDownTimer setupCountDownForTheFirstTime:^(ZGCountDownTimer *timer) {
         timer.taskTime = self.taskTime;
@@ -124,7 +122,7 @@
 }
 
 - (IBAction)skipButtonPressed:(id)sender {
-//    [self.myCountDownTimer skipCountDown];
+    [self.myCountDownTimer skipCountDown];
 }
 
 #pragma mark - Delegate methods.

@@ -83,11 +83,11 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
         }
     }
     else {
-        _totalCountDownTime = 0;
-        self.timePassed = 0;
-        self.taskTime = 0;
-        self.shortBreakTime = 0;
-        self.repeatCount = 0;
+//        _totalCountDownTime = 0;
+//        self.timePassed = 0;
+//        self.taskTime = 0;
+//        self.shortBreakTime = 0;
+//        self.repeatCount = 0;
 
         if (firstBlock) {
             firstBlock(self);
@@ -103,7 +103,6 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     
     // The below methods are for setting initial cycle values and setting the textlabel values with initial taskTime when the app launches for the first time.
     [self setInitialCycleValues];
-    [self notifyDelegateWithPassedTime:self.timePassed ofCycleFinishTime:self.taskTime];
 }
 
 - (void)setCountDownRunning:(BOOL)countDownRunning
@@ -111,13 +110,13 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     _countDownRunning = countDownRunning;
     
     if (!self.defaultTimer && countDownRunning) {
+        NSLog(@"Setting default timer");
         [self setupDefaultTimer];
     }
     
+    // Pause button pressed
     if (!countDownRunning) {
-        if (!self.started) {
-            [self notifyDelegateWithPassedTime:self.timePassed ofCycleFinishTime:self.taskTime];
-        } else {
+        if (self.started) {
             [self notifyDelegateWithPassedTime:self.timePassed ofCycleFinishTime:self.cycleFinishTime];
         }
     }
@@ -169,22 +168,18 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)resetCountDown
 {
-    self.timePassed = 0;
-    self.countDownRunning = NO;
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
     [self setInitialCycleValues];
+    _countDownRunning = NO;
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
     [self removeSelfBackup];
 }
 
-//- (void)skipCountDown
-//{
-//    self.timePassed = 0;
-////    self.countDownRunning = NO;
-//    [self skipToNextCycle];
-//    NSDate *completionDate = [NSDate dateWithTimeInterval:(self.totalCountDownTime - self.cycleFinishTime) sinceDate:[NSDate date]];
-//    self.timePassed = round(self.totalCountDownTime - [completionDate timeIntervalSinceNow]);
-////    [self notifyDelegate:self.cycleFinishTime];
-//}
+- (void)skipCountDown
+{
+    self.timePassed = self.cycleFinishTime;
+    [self skipToNextCycle];
+    [self notifyDelegateWithPassedTime:self.timePassed ofCycleFinishTime:self.cycleFinishTime];
+}
 
 #pragma mark - timer update method.
 
@@ -277,10 +272,12 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)setInitialCycleValues
 {
+    self.timePassed = 0;
     self.cycleFinishTime = self.taskTime;
     self.cycle = TaskCycle;
     self.taskCount = 1;
     self.timerCycleCount = 1;
+    [self notifyDelegateWithPassedTime:0 ofCycleFinishTime:self.taskTime];
 }
 
 - (void)skipToNextCycle
