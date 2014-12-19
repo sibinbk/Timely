@@ -102,8 +102,8 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     _totalCountDownTime = totalCountDownTime;
     
     // The below methods are for setting initial cycle values and setting the textlabel values with initial taskTime when the app launches for the first time.
-    [self setInitiaCycleValues];
-    [self notifyDelegate:self.taskTime];
+    [self setInitialCycleValues];
+    [self notifyDelegateWithPassedTime:self.timePassed ofCycleFinishTime:self.taskTime];
 }
 
 - (void)setCountDownRunning:(BOOL)countDownRunning
@@ -116,9 +116,9 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     
     if (!countDownRunning) {
         if (!self.started) {
-            [self notifyDelegate:self.taskTime];
+            [self notifyDelegateWithPassedTime:self.timePassed ofCycleFinishTime:self.taskTime];
         } else {
-            [self notifyDelegate:self.cycleFinishTime];
+            [self notifyDelegateWithPassedTime:self.timePassed ofCycleFinishTime:self.cycleFinishTime];
         }
     }
 }
@@ -172,9 +172,19 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     self.timePassed = 0;
     self.countDownRunning = NO;
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
-    [self setInitiaCycleValues];
+    [self setInitialCycleValues];
     [self removeSelfBackup];
 }
+
+//- (void)skipCountDown
+//{
+//    self.timePassed = 0;
+////    self.countDownRunning = NO;
+//    [self skipToNextCycle];
+//    NSDate *completionDate = [NSDate dateWithTimeInterval:(self.totalCountDownTime - self.cycleFinishTime) sinceDate:[NSDate date]];
+//    self.timePassed = round(self.totalCountDownTime - [completionDate timeIntervalSinceNow]);
+////    [self notifyDelegate:self.cycleFinishTime];
+//}
 
 #pragma mark - timer update method.
 
@@ -192,38 +202,17 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
             NSTimeInterval newTimePassed = round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]);
             
             if (self.cycleFinishTime < newTimePassed) {
-                NSLog(@"CycleTime < TimePassed");
+                
                 while (self.cycleFinishTime < newTimePassed) {
-                    switch (self.cycle) {
-                        case TaskCycle:
-                            self.timerCycleCount++;
-                            if (![self checkIfLongBreakCycle:self.taskCount]) {
-                                self.cycle = ShortBreakCycle;
-                                self.cycleFinishTime += self.shortBreakTime;
-                            } else {
-                                self.cycle = LongBreakCycle;
-                                self.cycleFinishTime += self.longBreakTime;
-                            }
-                            break;
-                        case ShortBreakCycle:
-                            self.cycle = TaskCycle;
-                            self.taskCount++;
-                            self.timerCycleCount++;
-                            self.cycleFinishTime += self.taskTime;
-                            break;
-                        case LongBreakCycle:
-                            self.cycle = TaskCycle;
-                            self.taskCount++;
-                            self.timerCycleCount++;
-                            self.cycleFinishTime += self.taskTime;
-                            break;
-                    }
+                    // Check current countdown cycle and skip to next cycle.
+                    [self skipToNextCycle];
                 }
-                [self notifySpecificDelegateMethod:newTimePassed];
+                
+                [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
                 
             } else if (self.cycleFinishTime == newTimePassed) {
                 
-                [self notifySpecificDelegateMethod:newTimePassed];
+                [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
                 
                 switch (self.cycle) {
                     case TaskCycle:
@@ -256,7 +245,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                         break;
                 }
             } else {
-                [self notifySpecificDelegateMethod:newTimePassed];
+                [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
             }
             
             self.timePassed = newTimePassed;
@@ -286,7 +275,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     [[NSRunLoop mainRunLoop] addTimer:self.defaultTimer forMode:NSRunLoopCommonModes];
 }
 
-- (void)setInitiaCycleValues
+- (void)setInitialCycleValues
 {
     self.cycleFinishTime = self.taskTime;
     self.cycle = TaskCycle;
@@ -294,17 +283,38 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     self.timerCycleCount = 1;
 }
 
-- (void)notifyDelegate:(NSTimeInterval)newCycleTime
+- (void)skipToNextCycle
 {
-    if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:ofCycle:)]) {
-        [self.delegate secondUpdated:self countDownTimePassed:self.timePassed ofTotalTime:newCycleTime ofCycle:[self currentCycleName]];
+    switch (self.cycle) {
+        case TaskCycle:
+            self.timerCycleCount++;
+            if (![self checkIfLongBreakCycle:self.taskCount]) {
+                self.cycle = ShortBreakCycle;
+                self.cycleFinishTime += self.shortBreakTime;
+            } else {
+                self.cycle = LongBreakCycle;
+                self.cycleFinishTime += self.longBreakTime;
+            }
+            break;
+        case ShortBreakCycle:
+            self.cycle = TaskCycle;
+            self.taskCount++;
+            self.timerCycleCount++;
+            self.cycleFinishTime += self.taskTime;
+            break;
+        case LongBreakCycle:
+            self.cycle = TaskCycle;
+            self.taskCount++;
+            self.timerCycleCount++;
+            self.cycleFinishTime += self.taskTime;
+            break;
     }
 }
 
-- (void)notifySpecificDelegateMethod:(NSTimeInterval)newTimePassed
+- (void)notifyDelegateWithPassedTime:(NSTimeInterval)timePassed ofCycleFinishTime:(NSTimeInterval)finishTime
 {
     if ([self.delegate respondsToSelector:@selector(secondUpdated:countDownTimePassed:ofTotalTime:ofCycle:)]) {
-        [self.delegate secondUpdated:self countDownTimePassed:newTimePassed ofTotalTime:self.cycleFinishTime ofCycle:[self currentCycleName]];
+        [self.delegate secondUpdated:self countDownTimePassed:timePassed ofTotalTime:finishTime ofCycle:[self currentCycleName]];
     }
 }
 

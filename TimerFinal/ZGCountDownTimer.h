@@ -102,6 +102,9 @@
 /** reset timer cause timer reset, the totalCountDownTime will not change */
 - (void)resetCountDown;
 
+/** skip to next coundown cycle when the timer is paused **/
+- (void)skipCountDown;
+
 /** timer is running, it must be started */
 @property (nonatomic, readonly) BOOL isRunning;
 

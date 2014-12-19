@@ -23,6 +23,7 @@
 
 - (IBAction)startButtonPressed:(id)sender;
 - (IBAction)resetButtonPressed:(id)sender;
+- (IBAction)skipButtonPressed:(id)sender;
 
 @end
 
@@ -122,6 +123,10 @@
     [self.startButton setTitle:@"Start" forState:UIControlStateNormal];
 }
 
+- (IBAction)skipButtonPressed:(id)sender {
+//    [self.myCountDownTimer skipCountDown];
+}
+
 #pragma mark - Delegate methods.
 
 - (void)secondUpdated:(ZGCountDownTimer *)sender countDownTimePassed:(NSTimeInterval)timePassed ofTotalTime:(NSTimeInterval)totalTime ofCycle:(NSString *)cycle{
@@ -141,18 +146,18 @@
 }
 
 - (void)taskCompleted:(ZGCountDownTimer *)sender {
-//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Task Finished" message:@"Task Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//    [alertView show];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Task Finished" message:@"Task Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
 }
 
 - (void)shortBreakCompleted:(ZGCountDownTimer *)sender {
-//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Short Break Finished" message:@"Short Break Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//    [alertView show];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Short Break Finished" message:@"Short Break Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
 }
 
 - (void)longBreakCompleted:(ZGCountDownTimer *)sender{
-//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Long Break Finished" message:@"Long Break Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//    [alertView show];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Long Break Finished" message:@"Long Break Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
 }
 
 @end

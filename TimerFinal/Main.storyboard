@@ -52,12 +52,24 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u6h-uw-SBH">
+                                <rect key="frame" x="145" y="394" width="31" height="30"/>
+                                <state key="normal" title="Skip">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="skipButtonPressed:" destination="Q0M-yL-b5B" eventType="touchUpInside" id="0We-Sx-uCs"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.50196081399917603" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="3yP-Kh-pfl" firstAttribute="centerY" secondItem="oGw-5a-qlS" secondAttribute="centerY" id="9DM-h6-Zrh"/>
                             <constraint firstItem="JBQ-60-2jX" firstAttribute="top" secondItem="2Vo-2b-94N" secondAttribute="top" constant="124" id="JmL-Lb-LpR"/>
+                            <constraint firstAttribute="centerX" secondItem="u6h-uw-SBH" secondAttribute="centerX" id="LhD-6e-eeT"/>
                             <constraint firstAttribute="trailing" secondItem="oGw-5a-qlS" secondAttribute="trailing" constant="80" id="QHT-Yo-vHJ"/>
+                            <constraint firstItem="u6h-uw-SBH" firstAttribute="top" secondItem="3yP-Kh-pfl" secondAttribute="bottom" constant="29" id="UQZ-AH-MYF"/>
                             <constraint firstItem="3yP-Kh-pfl" firstAttribute="top" secondItem="JBQ-60-2jX" secondAttribute="bottom" constant="100" id="bEi-UG-VJM"/>
                             <constraint firstAttribute="centerX" secondItem="wZM-7L-20u" secondAttribute="centerX" id="bMg-Hj-ONi"/>
                             <constraint firstAttribute="centerX" secondItem="JBQ-60-2jX" secondAttribute="centerX" id="dba-kC-UFI"/>
