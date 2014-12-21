@@ -39,11 +39,11 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    self.taskTime = 30;
-    self.shortBreakTime = 20;
-    self.longBreakTime = 40;
-    self.repeatCount = 5;
-    self.longBreakDelay = 3;
+    self.taskTime = 20;
+    self.shortBreakTime = 10;
+    self.longBreakTime = 15;
+    self.repeatCount = 2;
+    self.longBreakDelay = 2;
     
     self.myCountDownTimer = [ZGCountDownTimer countDownTimerWithIdentifier:nil];
     self.myCountDownTimer.delegate = self;
@@ -144,18 +144,18 @@
 }
 
 - (void)taskCompleted:(ZGCountDownTimer *)sender {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Task Finished" message:@"Task Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alertView show];
+//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Task Finished" message:@"Task Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//    [alertView show];
 }
 
 - (void)shortBreakCompleted:(ZGCountDownTimer *)sender {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Short Break Finished" message:@"Short Break Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alertView show];
+//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Short Break Finished" message:@"Short Break Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//    [alertView show];
 }
 
 - (void)longBreakCompleted:(ZGCountDownTimer *)sender{
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Long Break Finished" message:@"Long Break Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alertView show];
+//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Long Break Finished" message:@"Long Break Cycle Completed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//    [alertView show];
 }
 
 @end

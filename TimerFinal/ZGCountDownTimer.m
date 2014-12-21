@@ -186,8 +186,9 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (void)timerUpdated:(NSTimer *)timer
 {
     if ([self countDownRunning]) {
-        if ([self.countDownCompleteDate timeIntervalSinceNow] <= 0) {
-            self.timePassed = MAX(0, round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]));
+//        if ([self.countDownCompleteDate timeIntervalSinceNow] < 0 || self.taskCount > self.repeatCount) {
+        if ([self.countDownCompleteDate timeIntervalSinceNow] < 0) {
+//            self.timePassed = MAX(0, round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]));
             if ([self.delegate respondsToSelector:@selector(countDownCompleted:)]) {
                 [self.delegate countDownCompleted:self];
             }
