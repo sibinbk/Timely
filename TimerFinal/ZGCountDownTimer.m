@@ -197,16 +197,9 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
         else {
             NSTimeInterval newTimePassed = round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]);
             
-            if (self.cycleFinishTime < newTimePassed) {
-                
-                while (self.cycleFinishTime < newTimePassed) {
-                    // Check current countdown cycle and skip to next cycle.
-                    [self skipToNextCycle];
-                }
-                
+            if (newTimePassed < self.cycleFinishTime) {
                 [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
-                
-            } else if (self.cycleFinishTime == newTimePassed) {
+            } else if (newTimePassed == self.cycleFinishTime) {
                 
                 [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
                 
@@ -241,6 +234,10 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                         break;
                 }
             } else {
+                while (self.cycleFinishTime < newTimePassed) {
+                    // Check current countdown cycle and skip to next cycle.
+                    [self skipToNextCycle];
+                }
                 [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
             }
             
