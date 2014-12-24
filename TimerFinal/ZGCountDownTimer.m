@@ -41,6 +41,8 @@ typedef NS_ENUM(NSInteger, CountDownCycleType) {
 @property (nonatomic) NSInteger taskCount;
 @property (nonatomic) NSInteger longBreakCount;
 @property (nonatomic) NSInteger timerCycleCount;
+//
+@property (nonatomic) NSDate *startDate;
 
 @end
 
@@ -138,6 +140,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 {
     if (![self countDownRunning]) {
         if (self.totalCountDownTime > self.timePassed) {
+            self.startDate = [NSDate date];
             self.countDownCompleteDate = [NSDate dateWithTimeInterval:(self.totalCountDownTime - self.timePassed) sinceDate:[NSDate date]];
             self.countDownRunning = YES;
             [self setupLocalNotifications];
@@ -187,15 +190,17 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 {
     if ([self countDownRunning]) {
 //        if ([self.countDownCompleteDate timeIntervalSinceNow] < 0 || self.taskCount > self.repeatCount) {
-        if ([self.countDownCompleteDate timeIntervalSinceNow] < 0) {
-//            self.timePassed = MAX(0, round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]));
+        if (round([self.countDownCompleteDate timeIntervalSinceNow]) < 0) {
+            NSLog(@"Time interval : %f", [self.countDownCompleteDate timeIntervalSinceNow]);
             if ([self.delegate respondsToSelector:@selector(countDownCompleted:)]) {
                 [self.delegate countDownCompleted:self];
             }
             [self resetCountDown];
-        }
-        else {
+        } else {
             NSTimeInterval newTimePassed = round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]);
+            NSLog(@"Time passed : %li", (long) newTimePassed);
+//            NSDate *currentDate = [NSDate date];
+//            NSTimeInterval newTimePassed = [[NSDate date] timeIntervalSinceDate:self.startDate];
             
             if (newTimePassed < self.cycleFinishTime) {
                 [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
