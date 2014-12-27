@@ -42,7 +42,7 @@
     self.taskTime = 20;
     self.shortBreakTime = 10;
     self.longBreakTime = 15;
-    self.repeatCount = 2;
+    self.repeatCount = 3;
     self.longBreakDelay = 2;
     
     self.myCountDownTimer = [ZGCountDownTimer countDownTimerWithIdentifier:nil];

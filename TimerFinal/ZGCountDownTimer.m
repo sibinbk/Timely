@@ -22,6 +22,8 @@
 #define kZGTimerCycleCount                  @"timerCycleCount"
 #define kZGLongBreakDelay                   @"longBreakDelay"
 #define kZGCountDownCycle                   @"countDownCycle"
+#define kZGStartCountDate                   @"startCountDate"
+#define kZGPauseCountDate                   @"pauseCountDate"
 
 #define kZGCountDownUserDefaultKey          @"ZGCountDownUserDefaults"
 
@@ -42,7 +44,8 @@ typedef NS_ENUM(NSInteger, CountDownCycleType) {
 @property (nonatomic) NSInteger longBreakCount;
 @property (nonatomic) NSInteger timerCycleCount;
 //
-@property (nonatomic) NSDate *startDate;
+@property (nonatomic) NSDate *startCountDate;
+@property (nonatomic) NSDate *pauseCountDate;
 
 @end
 
@@ -139,18 +142,26 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (BOOL)startCountDown
 {
     if (![self countDownRunning]) {
-        if (self.totalCountDownTime > self.timePassed) {
-            self.startDate = [NSDate date];
-            self.countDownCompleteDate = [NSDate dateWithTimeInterval:(self.totalCountDownTime - self.timePassed) sinceDate:[NSDate date]];
+//        if (self.totalCountDownTime > self.timePassed) {
+        self.countDownCompleteDate = [NSDate dateWithTimeInterval:self.totalCountDownTime sinceDate:[NSDate date]];
+        if (self.startCountDate == [NSDate dateWithTimeIntervalSince1970:0]) {
+            self.startCountDate = [NSDate date];
+        }
+        
+        if (self.pauseCountDate != [NSDate dateWithTimeIntervalSince1970:0]) {
+            NSTimeInterval countedTime = round([self.pauseCountDate timeIntervalSinceDate:self.startCountDate]);
+            self.startCountDate = [[NSDate date] dateByAddingTimeInterval:-countedTime];
+            self.pauseCountDate = [NSDate dateWithTimeIntervalSince1970:0];
+        }
             self.countDownRunning = YES;
             [self setupLocalNotifications];
             [self backUpMySelf];
             return YES;
-        } else {
-            [self.delegate countDownCompleted:self];
-            [self removeSelfBackup];
-            return NO;
-        }
+//        } else {
+//            [self.delegate countDownCompleted:self];
+//            [self removeSelfBackup];
+//            return NO;
+//        }
     } else {
         return NO;
     }
@@ -159,6 +170,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (BOOL)pauseCountDown
 {
     if ([self countDownRunning]) {
+        self.pauseCountDate = [NSDate date];
         self.countDownRunning = NO;
         [[UIApplication sharedApplication] cancelAllLocalNotifications];
         [self backUpMySelf];
@@ -189,23 +201,29 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (void)timerUpdated:(NSTimer *)timer
 {
     if ([self countDownRunning]) {
-//        if ([self.countDownCompleteDate timeIntervalSinceNow] < 0 || self.taskCount > self.repeatCount) {
         if (round([self.countDownCompleteDate timeIntervalSinceNow]) < 0) {
-            NSLog(@"Time interval : %f", [self.countDownCompleteDate timeIntervalSinceNow]);
+            NSLog(@"Target completed");
             if ([self.delegate respondsToSelector:@selector(countDownCompleted:)]) {
                 [self.delegate countDownCompleted:self];
             }
             [self resetCountDown];
         } else {
-            NSTimeInterval newTimePassed = round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]);
-            NSLog(@"Time passed : %li", (long) newTimePassed);
+//            NSLog(@"Time interval : %f", [self.countDownCompleteDate timeIntervalSinceNow]);
+//            if ([self.delegate respondsToSelector:@selector(countDownCompleted:)]) {
+//                [self.delegate countDownCompleted:self];
+//            }
+//            [self resetCountDown];
+//        } else {
+//            NSTimeInterval newTimePassed = round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]);
+//            NSLog(@"Time passed : %li", (long) newTimePassed);
 //            NSDate *currentDate = [NSDate date];
-//            NSTimeInterval newTimePassed = [[NSDate date] timeIntervalSinceDate:self.startDate];
+            NSTimeInterval newTimePassed = round([[NSDate date] timeIntervalSinceDate:self.startCountDate]);
             
             if (newTimePassed < self.cycleFinishTime) {
+//                NSLog(@"Less");
                 [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
             } else if (newTimePassed == self.cycleFinishTime) {
-                
+//                NSLog(@"Equal");
                 [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
                 
                 switch (self.cycle) {
@@ -239,10 +257,13 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                         break;
                 }
             } else {
+//                NSLog(@"Time Passed Before Loop : %f", newTimePassed);
                 while (self.cycleFinishTime < newTimePassed) {
+//                    NSLog(@"In the loop");
                     // Check current countdown cycle and skip to next cycle.
                     [self skipToNextCycle];
                 }
+//                NSLog(@"Time Passed after Loop : %f", newTimePassed);
                 [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
             }
             
@@ -275,6 +296,8 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)setInitialCycleValues
 {
+    self.startCountDate = [NSDate dateWithTimeIntervalSince1970:0];
+    self.pauseCountDate = [NSDate dateWithTimeIntervalSince1970:0];
     self.timePassed = 0;
     self.cycleFinishTime = self.taskTime;
     self.cycle = TaskCycle;
@@ -421,7 +444,10 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (NSDictionary *)countDownInfoForBackup
 {
-    return @{kZGCountDownTimerCompleteDateKey: self.countDownCompleteDate,
+    return @{
+             kZGCountDownTimerCompleteDateKey: self.countDownCompleteDate,
+             kZGStartCountDate: self.startCountDate,
+             kZGPauseCountDate: self.pauseCountDate,
              kZGCountDownTimerTimePassedKey: [NSNumber numberWithDouble:self.timePassed],
              kZGCountDownTotalTimeKey: [NSNumber numberWithDouble:self.totalCountDownTime],
              kZGCountDownRunningKey: [NSNumber numberWithBool:self.countDownRunning],
@@ -442,6 +468,8 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     self.totalCountDownTime = [[countDownInfo valueForKey:kZGCountDownTotalTimeKey] doubleValue];
     self.timePassed = [[countDownInfo valueForKey:kZGCountDownTimerTimePassedKey] doubleValue];
     self.countDownCompleteDate = [countDownInfo valueForKey:kZGCountDownTimerCompleteDateKey];
+    self.startCountDate = [countDownInfo valueForKey:kZGStartCountDate];
+    self.pauseCountDate = [countDownInfo valueForKey:kZGPauseCountDate];
     self.taskTime = [[countDownInfo valueForKey:kZGTaskTime] doubleValue];
     self.shortBreakTime = [[countDownInfo valueForKey:kZGShortBreakTime] doubleValue];
     self.longBreakTime = [[countDownInfo valueForKey:kZGLongBreakTime] doubleValue];
