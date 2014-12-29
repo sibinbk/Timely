@@ -143,14 +143,17 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 {
     if (![self countDownRunning]) {
 //        if (self.totalCountDownTime > self.timePassed) {
-        self.countDownCompleteDate = [NSDate dateWithTimeInterval:self.totalCountDownTime sinceDate:[NSDate date]];
+//        self.countDownCompleteDate = [NSDate dateWithTimeInterval:self.totalCountDownTime sinceDate:[NSDate date]];
         if (self.startCountDate == [NSDate dateWithTimeIntervalSince1970:0]) {
             self.startCountDate = [NSDate date];
+            self.countDownCompleteDate = [NSDate dateWithTimeInterval:self.totalCountDownTime sinceDate:self.startCountDate];
+//            NSLog(@"Start Date : %@", self.startCountDate);
         }
         
         if (self.pauseCountDate != [NSDate dateWithTimeIntervalSince1970:0]) {
             NSTimeInterval countedTime = round([self.pauseCountDate timeIntervalSinceDate:self.startCountDate]);
             self.startCountDate = [[NSDate date] dateByAddingTimeInterval:-countedTime];
+            self.countDownCompleteDate = [NSDate dateWithTimeInterval:(self.totalCountDownTime - countedTime) sinceDate:[NSDate date]];
             self.pauseCountDate = [NSDate dateWithTimeIntervalSince1970:0];
         }
             self.countDownRunning = YES;
@@ -191,6 +194,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)skipCountDown
 {
+    self.pauseCountDate = [NSDate dateWithTimeInterval:self.cycleFinishTime sinceDate:[NSDate date]];
     self.timePassed = self.cycleFinishTime;
     [self skipToNextCycle];
     [self notifyDelegateWithPassedTime:self.timePassed ofCycleFinishTime:self.cycleFinishTime];
@@ -202,6 +206,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 {
     if ([self countDownRunning]) {
         if (round([self.countDownCompleteDate timeIntervalSinceNow]) < 0) {
+            NSLog(@"Complete Time: %f", floor([self.countDownCompleteDate timeIntervalSinceNow]));
             NSLog(@"Target completed");
             if ([self.delegate respondsToSelector:@selector(countDownCompleted:)]) {
                 [self.delegate countDownCompleted:self];
@@ -218,6 +223,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 //            NSLog(@"Time passed : %li", (long) newTimePassed);
 //            NSDate *currentDate = [NSDate date];
             NSTimeInterval newTimePassed = round([[NSDate date] timeIntervalSinceDate:self.startCountDate]);
+//            NSTimeInterval newTimePassed = round([self.startCountDate timeIntervalSinceNow]);
             
             if (newTimePassed < self.cycleFinishTime) {
 //                NSLog(@"Less");
