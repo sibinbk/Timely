@@ -144,17 +144,18 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     if (![self countDownRunning]) {
 //        if (self.totalCountDownTime > self.timePassed) {
 //        self.countDownCompleteDate = [NSDate dateWithTimeInterval:self.totalCountDownTime sinceDate:[NSDate date]];
-        if (self.startCountDate == [NSDate dateWithTimeIntervalSince1970:0]) {
+        if (self.startCountDate == [NSDate dateWithTimeIntervalSinceReferenceDate:0]) {
             self.startCountDate = [NSDate date];
             self.countDownCompleteDate = [NSDate dateWithTimeInterval:self.totalCountDownTime sinceDate:self.startCountDate];
 //            NSLog(@"Start Date : %@", self.startCountDate);
         }
         
-        if (self.pauseCountDate != [NSDate dateWithTimeIntervalSince1970:0]) {
-            NSTimeInterval countedTime = round([self.pauseCountDate timeIntervalSinceDate:self.startCountDate]);
+        if (self.pauseCountDate != [NSDate dateWithTimeIntervalSinceReferenceDate:0]) {
+//            NSTimeInterval countedTime = round([self.pauseCountDate timeIntervalSinceDate:self.startCountDate]);
+            NSTimeInterval countedTime = [self.pauseCountDate timeIntervalSinceDate:self.startCountDate];
             self.startCountDate = [[NSDate date] dateByAddingTimeInterval:-countedTime];
             self.countDownCompleteDate = [NSDate dateWithTimeInterval:(self.totalCountDownTime - countedTime) sinceDate:[NSDate date]];
-            self.pauseCountDate = [NSDate dateWithTimeIntervalSince1970:0];
+            self.pauseCountDate = [NSDate dateWithTimeIntervalSinceReferenceDate:0];
         }
             self.countDownRunning = YES;
             [self setupLocalNotifications];
@@ -206,7 +207,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 {
     if ([self countDownRunning]) {
         if (round([self.countDownCompleteDate timeIntervalSinceNow]) < 0) {
-            NSLog(@"Complete Time: %f", floor([self.countDownCompleteDate timeIntervalSinceNow]));
+            NSLog(@"Complete Time: %f",[self.countDownCompleteDate timeIntervalSinceNow]);
             NSLog(@"Target completed");
             if ([self.delegate respondsToSelector:@selector(countDownCompleted:)]) {
                 [self.delegate countDownCompleted:self];
@@ -222,7 +223,8 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 //            NSTimeInterval newTimePassed = round(self.totalCountDownTime - [self.countDownCompleteDate timeIntervalSinceNow]);
 //            NSLog(@"Time passed : %li", (long) newTimePassed);
 //            NSDate *currentDate = [NSDate date];
-            NSTimeInterval newTimePassed = round([[NSDate date] timeIntervalSinceDate:self.startCountDate]);
+//            NSTimeInterval newTimePassed = round([[NSDate date] timeIntervalSinceDate:self.startCountDate]);
+            NSTimeInterval newTimePassed = [self calcuateTimePassed];
 //            NSTimeInterval newTimePassed = round([self.startCountDate timeIntervalSinceNow]);
             
             if (newTimePassed < self.cycleFinishTime) {
@@ -278,6 +280,19 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     }
 }
 
+- (NSTimeInterval)calcuateTimePassed
+{
+    NSTimeInterval tempTimePassed = [[NSDate date] timeIntervalSinceDate:self.startCountDate];
+    NSLog(@"TempTime passed: %f", tempTimePassed);
+    NSLog(@"Old TimePassed : %f", self.timePassed);
+    
+    if ((tempTimePassed - self.timePassed) < 0.6) {
+        tempTimePassed = tempTimePassed + 0.6;
+    }
+    
+    return (round(tempTimePassed));
+}
+
 #pragma mark - helper methods
 
 - (BOOL)checkIfLongBreakCycle:(NSInteger)taskCount
@@ -302,8 +317,8 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)setInitialCycleValues
 {
-    self.startCountDate = [NSDate dateWithTimeIntervalSince1970:0];
-    self.pauseCountDate = [NSDate dateWithTimeIntervalSince1970:0];
+    self.startCountDate = [NSDate dateWithTimeIntervalSinceReferenceDate:0];
+    self.pauseCountDate = [NSDate dateWithTimeIntervalSinceReferenceDate:0];
     self.timePassed = 0;
     self.cycleFinishTime = self.taskTime;
     self.cycle = TaskCycle;
