@@ -206,7 +206,8 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (void)timerUpdated:(NSTimer *)timer
 {
     if ([self countDownRunning]) {
-        if (round([self.countDownCompleteDate timeIntervalSinceNow]) < 0) {
+//        if (round([self.countDownCompleteDate timeIntervalSinceNow]) < 0) {
+        if (self.cycleFinishTime > self.totalCountDownTime) {
             NSLog(@"Complete Time: %f",[self.countDownCompleteDate timeIntervalSinceNow]);
             NSLog(@"Target completed");
             if ([self.delegate respondsToSelector:@selector(countDownCompleted:)]) {
@@ -272,7 +273,13 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                     [self skipToNextCycle];
                 }
 //                NSLog(@"Time Passed after Loop : %f", newTimePassed);
-                [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
+                if (self.cycleFinishTime > self.totalCountDownTime) {
+//                    self.timePassed = self.totalCountDownTime;
+//                    [self pauseCountDown];
+                    [self notifyDelegateWithPassedTime:0 ofCycleFinishTime:self.taskTime];
+                } else {
+                    [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
+                }
             }
             
             self.timePassed = newTimePassed;
