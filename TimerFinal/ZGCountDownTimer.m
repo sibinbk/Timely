@@ -189,7 +189,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
             }
             [self resetCountDown];
         } else {
-            NSTimeInterval newTimePassed = [self calcuateTimePassed];
+            NSTimeInterval newTimePassed = round([self calcuateTimePassed]);
             NSLog(@"New TimePassed : %f", newTimePassed);
             
             if (newTimePassed < self.cycleFinishTime) {
@@ -245,6 +245,8 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     }
 }
 
+#pragma mark - helper methods
+
 - (NSTimeInterval)calcuateTimePassed
 {
     NSTimeInterval tempTimePassed = [[NSDate date] timeIntervalSinceDate:self.startCountDate];
@@ -253,13 +255,11 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     
     // Checks previous value to avoid skipping the count number.
     if ((tempTimePassed - self.timePassed) < 0.5) {
-        return (round(tempTimePassed + 1.0));
+        return (tempTimePassed + 1.0);
     } else {
-        return (round(tempTimePassed));
+        return (tempTimePassed);
     }
 }
-
-#pragma mark - helper methods
 
 - (BOOL)checkIfLongBreakCycle:(NSInteger)taskCount
 {
