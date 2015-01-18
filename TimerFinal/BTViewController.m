@@ -127,9 +127,35 @@
 
 #pragma mark - Delegate methods.
 
-- (void)secondUpdated:(ZGCountDownTimer *)sender countDownTimePassed:(NSTimeInterval)timePassed ofTotalTime:(NSTimeInterval)totalTime ofCycle:(NSString *)cycle{
+- (void)secondUpdated:(ZGCountDownTimer *)sender countDownTimePassed:(NSTimeInterval)timePassed ofTotalTime:(NSTimeInterval)totalTime
+{
     self.timerLabel.text = [ZGCountDownTimer getDateStringForTimeInterval:(totalTime - timePassed)];
-    self.cycleLabel.text = cycle;
+}
+
+- (void)countDownCycleChanged:(ZGCountDownTimer *)sender cycle:(NSInteger)newCycle withTaskCount:(NSInteger)count
+{
+    /*
+     // newCycle = 1 --> Pmodoro
+     // newcycle = 2 --> Short Break
+     // newCycle = 2 --> Long Break
+     */
+    
+    switch (newCycle) {
+        case 1:
+            self.cycleLabel.text = [NSString stringWithFormat:@"Pomodoro # %ld", (long) count];
+            self.view.backgroundColor = [UIColor colorWithRed:0.976 green:0.369 blue:0.31 alpha:1];
+            break;
+        case 2:
+            self.cycleLabel.text = @"Short Break";
+            self.view.backgroundColor = [UIColor colorWithRed:0.22 green:0.565 blue:0.847 alpha:1];
+            break;
+        case 3:
+            self.cycleLabel.text = @"Long Break";
+            self.view.backgroundColor = [UIColor colorWithRed:0.827 green:0.4 blue:1 alpha:1]; /*#d366ff*/
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)countDownCompleted:(ZGCountDownTimer *)sender {
