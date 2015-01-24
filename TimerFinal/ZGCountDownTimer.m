@@ -9,7 +9,6 @@
 #import "ZGCountDownTimer.h"
 #import "AppDelegate.h"
 
-#define kZGCountDownTimerCompleteDateKey    @"countDownCompleteDate"
 #define kZGCountDownTimerTimePassedKey      @"countDownTimePassed"
 #define kZGCountDownTotalTimeKey            @"countDownTotalTime"
 #define kZGCountDownRunningKey              @"countDownRunning"
@@ -35,15 +34,14 @@ typedef NS_ENUM(NSInteger, CountDownCycleType) {
 
 @interface ZGCountDownTimer()
 
-@property (nonatomic) NSTimer *defaultTimer;
-@property (nonatomic) BOOL countDownRunning;
-@property (nonatomic) NSDate *countDownCompleteDate;
-@property (nonatomic) NSTimeInterval cycleFinishTime;
 @property (nonatomic) CountDownCycleType cycle;
+@property (nonatomic) NSTimer *defaultTimer;
+@property (nonatomic) NSTimeInterval cycleFinishTime;
 @property (nonatomic) NSInteger taskCount;
 @property (nonatomic) NSInteger longBreakCount;
 @property (nonatomic) NSInteger timerCycleCount;
 @property (nonatomic) NSDate *startCountDate;
+@property (nonatomic) BOOL countDownRunning;
 @property (nonatomic) BOOL cycleChanged;
 
 @end
@@ -151,13 +149,19 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (BOOL)pauseCountDown
 {
     if (self.countDownRunning) {
-        self.countDownRunning = NO;
+        _countDownRunning = NO;
         self.cycleChanged = YES;
         [[UIApplication sharedApplication] cancelAllLocalNotifications];
         [self backUpMySelf];
+        
+        if (self.defaultTimer) {
+            NSLog(@"Timer invalidated");
+            [self.defaultTimer invalidate];
+            self.defaultTimer = nil;
+        }
+        
         return YES;
-    }
-    else {
+    } else {
         return NO;
     }
 }
@@ -168,6 +172,12 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     _countDownRunning = NO;
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
     [self removeSelfBackup];
+    
+    if (self.defaultTimer) {
+        NSLog(@"Timer invalidated");
+        [self.defaultTimer invalidate];
+        self.defaultTimer = nil;
+    }
 }
 
 - (void)skipCountDown
@@ -185,7 +195,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 
 - (void)timerUpdated:(NSTimer *)timer
 {
-    NSLog(@"Timer Loop called");
+    NSLog(@"Timer running");
     if (self.countDownRunning) {
         if (self.cycleFinishTime > self.totalCountDownTime) {
             if ([self.delegate respondsToSelector:@selector(countDownCompleted:)]) {
@@ -240,9 +250,13 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
                     // Check current countdown cycle and skip to next cycle.
                     [self skipToNextCycle];
                 }
-
+                
                 if (self.cycleFinishTime > self.totalCountDownTime) {
-                    [self notifyDelegateWithPassedTime:0 ofCycleFinishTime:self.taskTime];
+                    //                    [self notifyDelegateWithPassedTime:0 ofCycleFinishTime:self.taskTime];
+                    if ([self.delegate respondsToSelector:@selector(countDownCompleted:)]) {
+                        [self.delegate countDownCompleted:self];
+                    }
+                    [self resetCountDown];
                 } else {
                     [self notifyDelegateWithPassedTime:newTimePassed ofCycleFinishTime:self.cycleFinishTime];
                 }
@@ -285,8 +299,8 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (void)setupDefaultTimer
 {
     self.defaultTimer = [NSTimer timerWithTimeInterval:1.f target:self selector:@selector(timerUpdated:) userInfo:nil repeats:YES];
-    [self.defaultTimer fire];
     [[NSRunLoop mainRunLoop] addTimer:self.defaultTimer forMode:NSRunLoopCommonModes];
+    [self.defaultTimer fire];
 }
 
 - (void)setInitialCycleValues
@@ -345,7 +359,6 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
             [self.delegate countDownCycleChanged:self cycle:[self currentCycle] withTaskCount:self.taskCount];
         }
     }
-
 }
 
 - (NSInteger)currentCycle
@@ -354,13 +367,13 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     
     switch (self.cycle) {
         case TaskCycle:
-            cycle = 1;  /* Pomodoro */
+            cycle = 1;   /* Pomodoro */
             break;
         case ShortBreakCycle:
-            cycle = 2;  /* Short Break */
+            cycle = 2;   /* Short Break */
             break;
         case LongBreakCycle:
-            cycle = 3;  /* Long Break */
+            cycle = 3;   /* Long Break */
             break;
     }
     return cycle;
@@ -378,7 +391,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
     
     UILocalNotification *notification = [[UILocalNotification alloc] init];
     notification.timeZone = nil;
-    notification.soundName = nil;
+    notification.soundName = UILocalNotificationDefaultSoundName;
     
     for (int i = 0; i < notificationCount; i++) {
         
@@ -491,6 +504,7 @@ static NSMutableDictionary *_countDownTimersWithIdentifier;
 - (void)dealloc
 {
     [self.defaultTimer invalidate];
+    self.defaultTimer = nil;
 }
 
 + (NSString *)getDateStringForTimeInterval:(NSTimeInterval)timeInterval
